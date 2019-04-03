@@ -1,5 +1,5 @@
 
-// Forsafaskpffaspfsakasfkp
+
 class Department  extends Hospital {
     private String mNameOfDepartment;
     private int mCorpus;
@@ -11,9 +11,12 @@ class Department  extends Hospital {
         mFloor=floor;
     }
 
-@Override
+    public Department() {
+    }
+
+    @Override
     public String toString(){
-        return "Название отделения: "+mNameOfDepartment+"; \n"+
+        return super.toString()+"Название отделения: "+mNameOfDepartment+"; \n"+
                 "Корпус: "+mCorpus+"; \n"+
                 "Этаж: "+mFloor+"; \n";
 }

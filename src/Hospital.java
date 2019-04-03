@@ -2,13 +2,16 @@ public class Hospital {
     private String mNameOfHospital;
     private String mFIOofDirector;// ФИО заведующего
     private String mCity;
-    private String mAdress;
+    private String mAddress;
 
-    public Hospital(String nameOfHospital, String fioOfDirector, String city, String adress){
+    public Hospital(String nameOfHospital, String fioOfDirector, String city, String address){
         mNameOfHospital=nameOfHospital;
         mFIOofDirector=fioOfDirector;
         mCity=city;
-        mAdress= adress;
+        mAddress= address;
+    }
+
+    public Hospital() {
     }
 
     @Override
@@ -16,7 +19,7 @@ public class Hospital {
         return "Название больницы: "+mNameOfHospital+"; \n"+
                 "Ф.И.О заведующего : "+mFIOofDirector+
                 "Город: "+mCity+"; \n"+
-                "Адресс:"+mAdress+"; \n";
+                "Адресс:"+mAddress+"; \n";
     }
 
     public String getNameOfHospital(){ return mNameOfHospital; }
@@ -36,10 +39,10 @@ public class Hospital {
     public void setCity(String city){
         mCity=city;
     }
-    public String getAdress(){
-        return mAdress;
+    public String getaddress(){
+        return mAddress;
     }
-    public void setAdress(String adress){
-        mAdress=adress;
+    public void setaddress(String address){
+        mAddress=address;
     }
 }
