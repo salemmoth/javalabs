@@ -2,7 +2,7 @@ public class Patient extends Human implements ICanTakeHeal,ICanFirstAid{
     private long mInsurancesPolicy;
     private String mArrivalDate; // дата поступления
     private String mStatementDate; // дата выписки
-    private String mDiagnosis;
+    private String mDiagnosis; // Диагноз
     private String mDateOfOperation;
     private String mNameOfOperation;
     private int mMedicalCost; // стоимость лечения
