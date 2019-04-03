@@ -14,7 +14,6 @@ class Department  extends Hospital {
 @Override
     public String toString(){
         return "Название отделения: "+mNameOfDepartment+"; \n"+
-
                 "Корпус: "+mCorpus+"; \n"+
                 "Этаж: "+mFloor+"; \n";
 }
