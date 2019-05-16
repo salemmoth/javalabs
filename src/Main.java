@@ -1,178 +1,144 @@
 import jdk.swing.interop.SwingInterOpUtils;
 
+import javax.print.Doc;
+import java.awt.*;
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Scanner;
+import java.util.*;
 import java.text.ParseException;
+import java.util.List;
+import java.util.function.Consumer;
 
 public class Main {
-    static Hospital[] hospital;
-    static Department[] department;
-    static Patient[] patient;
-    static Doctor[] doctor;
-
-    public static void main(String[] args){
-        addDoctors();
-    }
+    final static String[] NAMES = {"Албегонов Игорь", "Алборов Мухсен", "Зурыков Георгий", "Беззубов Баракуда"};
+    final static String[] POSTS = {"Преподаватель", "Ученый", "Профессор", "Доцент"};
+    final static String[] CITIES = {"Владикавказ", "Москва", "Санкт-Петербург", "Новокузнецк", "Липецк"};
+    final static String[] DEPARTMENTS = {"Терапия", "Неврология", "Кардиология", "Гастроэнтерология", "Аллергологическое отделение", "Отделение реанимации и интенсивной терапии для больных с инфарктом миокарда"};
+    final static String[] DIAGNOSIS = {"Простуда", "Депрессия", "Грип", "Диссециативное расстройство личности", "Биполярное расстройство", "Отравление", "Перелом", "Расстяжение"};
 
 
-    public static void printHospitals() {
-        for (int i = 0; i < hospital.length; i++) {
-            String message = hospital[i].toString();
-            System.out.println(message);
+    static List<Hospital> hospitals;
+    static List<Department> departments;
+    static List<Patient> patients;
+    static List<Doctor> doctors;
+    static Scanner scanner;
+
+    static class Diagnose {
+        private int mCount;
+        private int mCost;
+
+        public Diagnose(int count, int cost) {
+            mCount = count;
+            mCost = cost;
+        }
+
+        public int getCount() {
+            return mCount;
+        }
+
+        public void setCount(int count) {
+            mCount = count;
+        }
+
+        public int getCost() {
+            return mCost;
+        }
+
+        public void setCost(int cost) {
+            mCost = cost;
         }
     }
 
-    public static void addHospitals() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Больницы.");
-        System.out.print("Количество больниц:");
-        int n = scanner.nextInt();
 
-        hospital = new Hospital[n];
-        for (int i = 0; i < n; i++) {
-            hospital[i] = new Hospital();
-            System.out.print("Название: ");
-            hospital[i].setNameOfHospital(scanner.next());
-            System.out.print("Город: ");
-            hospital[i].setCity(scanner.next());
-            System.out.print("Адрес: ");
-            hospital[i].setaddress(scanner.next());
-            System.out.print("ФИО директора: ");
-            hospital[i].setFIOofDirector(scanner.next());
-        }
-    }
+    public static void main(String[] args) {
+        scanner = new Scanner(System.in);
+        fillData();
+        System.out.println("1) Дорогостоящие операции");
+        System.out.println("2) Диагнозы стоимость и количество");
+        System.out.println("3) По каждому врачу получить список пациентов");
+        int choose = scanner.nextInt();
+        if (choose == 1) {
+            patients.sort(Comparator.comparingInt(Patient::getMedicalCost).reversed());
+            System.out.println("Самые дорогостоящие операции");
+            patients.forEach(System.out::println);
+        } else if (choose == 2) {
+            HashMap<String, Diagnose> hash = new HashMap<>();
 
-    public static void printDepartment() {
-        for (int i = 0; i < department.length; i++) {
-            String message = department[i].toString();
-            System.out.println(message);
-        }
-    }
 
-    public static void addDepartment() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Отделения.");
-        System.out.print("Количество:");
-        int n = scanner.nextInt();
+            patients.forEach(patient -> {
+                if (hash.containsKey(patient.getDiagnosis())) {
+                    Diagnose diagnose = hash.get(patient.getDiagnosis());
+                    diagnose.setCost(diagnose.getCost() + patient.getMedicalCost());
+                    diagnose.setCount(diagnose.getCount() + 1);
+                    hash.put(patient.getDiagnosis(), diagnose);
 
-        department = new Department[n];
-        for (int i = 0; i < n; i++) {
-            department[i] = new Department();
-            System.out.print("Название больницы: ");
-            department[i].setNameOfHospital(scanner.next());
-            System.out.print("Город: ");
-            department[i].setCity(scanner.next());
-            System.out.print("Адрес: ");
-            department[i].setaddress(scanner.next());
-            System.out.print("ФИО директора: ");
-            department[i].setFIOofDirector(scanner.next());
-            System.out.println("Название отделения:");
-            department[i].setNameOfDepartment(scanner.next());
-            System.out.println("Корпус:");
-            department[i].setCorpus(scanner.nextInt());
-            System.out.println("Этаж:");
-            department[i].setFloor(scanner.nextInt());
-
+                } else {
+                    hash.put(patient.getDiagnosis(), new Diagnose(1, patient.getMedicalCost()));
+                }
+            });
+            hash.keySet().forEach(key -> {
+                Diagnose diagnose = hash.get(key);
+                System.out.println("Диагноз: " + key);
+                System.out.println("Цена: " + diagnose.getCost());
+                System.out.println("Кол-во пациентов: " + diagnose.getCount());
+            });
+        } else if (choose == 3) {
+            doctors.forEach(doctor -> {
+                List<Patient> founded = new ArrayList<>();
+                patients.forEach(patient -> {
+                    Doctor healDoctor = patient.getHealingDoctor();
+                    if (healDoctor.equals(doctor))
+                        founded.add(patient);
+                });
+                System.out.println("Доктор " + doctor.getFIO() + ", кол-во пациентов: " + founded.size());
+            });
         }
 
     }
 
-    public static void printPatient() {
-        for (int i = 0; i < patient.length; i++) {
-            String message = patient[i].toString();
-            System.out.println(message);
+    static void fillData() {
+        patients = new ArrayList<>();
+        doctors = new ArrayList<>();
+        Random random = new Random();
+        System.out.print("Кол-во докторов: ");
+        int doctorsCount = scanner.nextInt();
+        System.out.print("Кол-во пациентов: ");
+        int patientsCount = scanner.nextInt();
+
+        for (int i = 0; i < doctorsCount; i++) {
+            Doctor doctor = new Doctor();
+            doctor.setFIO(NAMES[random.nextInt(NAMES.length)]);
+            doctor.setSciencePost(POSTS[random.nextInt(POSTS.length)]);
+            doctor.setCity(CITIES[random.nextInt(CITIES.length)]);
+            doctor.setFIOofDirector(NAMES[random.nextInt(NAMES.length)]);
+            doctor.setCorpus(random.nextInt(10) + 1);
+            doctor.setFloor(random.nextInt(5) + 1);
+            doctor.setNameOfHospital("ФГБОУ Клиническая больница №" + random.nextInt());
+            doctor.setWorkExperience(random.nextInt(30));
+            doctor.setaddress("Неизвестен");
+            doctor.setNameOfDepartment(DEPARTMENTS[random.nextInt(DEPARTMENTS.length)]);
+            doctors.add(doctor);
         }
-    }
-
-    public static void addPatient() throws ParseException {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Пациенты.");
-        System.out.print("Количество:");
-
-        DateFormat formater = new SimpleDateFormat("dd.mm.yyyy");
-
-        int n = scanner.nextInt();
-
-        patient = new Patient[n];
-        for (int i = 0; i < n; i++) {
-            patient[i] = new Patient();
-            System.out.print("Название больницы: ");
-            patient[i].setNameOfHospital(scanner.next());
-            System.out.print("Город: ");
-            patient[i].setCity(scanner.next());
-            System.out.print("Адрес: ");
-            patient[i].setaddress(scanner.next());
-            System.out.print("ФИО директора: ");
-            patient[i].setFIOofDirector(scanner.next());
-            System.out.println("Название отделения:");
-            patient[i].setNameOfDepartment(scanner.next());
-            System.out.println("Корпус:");
-            patient[i].setCorpus(scanner.nextInt());
-            System.out.println("Этаж:");
-            patient[i].setFloor(scanner.nextInt());
-            System.out.println("Ф.И.О.: ");
-            patient[i].setFIO(scanner.next());
-            System.out.println("Полис страхования:");
-            patient[i].setInsurancesPolicy(scanner.nextLong());
-            System.out.println("Дата поступления:");
-            patient[i].setArrivalDate(formater.parse(scanner.next()));
-            System.out.println("Дата выписки:");
-            patient[i].setStatementDate(formater.parse(scanner.next()));
-            System.out.println("Диагноз:");
-            patient[i].setDiagnosis(scanner.next());
-            System.out.println("Дата операции:");
-            patient[i].setDateOfOperation(formater.parse(scanner.next()));
-            System.out.println("Название операции:");
-            patient[i].setNameOfOperation(scanner.next());
-            System.out.println("Цена лечения:");
-            patient[i].setMedicalCost(scanner.nextInt());
+        for (int i = 0; i < patientsCount; i++) {
+            Patient patient = new Patient();
+            patient.setFIO(NAMES[random.nextInt(NAMES.length)]);
+            patient.setCity(CITIES[random.nextInt(CITIES.length)]);
+            patient.setFIOofDirector(NAMES[random.nextInt(NAMES.length)]);
+            patient.setCorpus(random.nextInt(10) + 1);
+            patient.setFloor(random.nextInt(5) + 1);
+            patient.setNameOfHospital("ФГБОУ Клиническая больница №" + random.nextInt());
+            patient.setaddress("Неизвестен");
+            patient.setNameOfDepartment(DEPARTMENTS[random.nextInt(DEPARTMENTS.length)]);
+            patient.setHealingDoctor(doctors.get(random.nextInt(doctors.size())));
+            patient.setDiagnosis(DIAGNOSIS[random.nextInt(DIAGNOSIS.length)]);
+            patient.setNameOfOperation("Операция #" + random.nextInt(1000));
+            patient.setMedicalCost(random.nextInt(1000) + 100);
+            patients.add(patient);
         }
-    }
 
-    public static void printDoctor() {
-        for (int i = 0; i < doctor.length; i++) {
-            String message = doctor[i].toString();
-            System.out.println(message);
-        }
-    }
-
-    public static void addDoctors() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Доктора.");
-        System.out.print("Количество:");
-
-        DateFormat formater = new SimpleDateFormat("dd.mm.yyyy");
-
-        int n = scanner.nextInt();
-
-        doctor = new Doctor[n];
-        for (int i = 0; i < n; i++) {
-            doctor[i] = new Doctor();
-            System.out.print("Название больницы: ");
-            doctor[i].setNameOfHospital(scanner.next());
-            System.out.print("Город: ");
-            doctor[i].setCity(scanner.next());
-            System.out.print("Адрес: ");
-            doctor[i].setaddress(scanner.next());
-            System.out.print("ФИО директора: ");
-            doctor[i].setFIOofDirector(scanner.next());
-            System.out.println("Название отделения:");
-            doctor[i].setNameOfDepartment(scanner.next());
-            System.out.println("Корпус:");
-            doctor[i].setCorpus(scanner.nextInt());
-            System.out.println("Этаж:");
-            doctor[i].setFloor(scanner.nextInt());
-            System.out.println("Ф.И.О.: ");
-            doctor[i].setFIO(scanner.next());
-            System.out.println("должность:");
-            doctor[i].setPost(scanner.next());
-            System.out.println("Стаж работы:");
-            doctor[i].setWorkExperience(scanner.nextInt());
-            System.out.println("Научная должность:");
-            doctor[i].setSciencePost(scanner.next());
-
-        }
+        doctors.forEach(System.out::println);
+        patients.forEach(System.out::println);
     }
 }
 

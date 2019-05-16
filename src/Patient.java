@@ -8,6 +8,21 @@ public class Patient extends Human implements ICanTakeHeal,ICanFirstAid{
     private Date mDateOfOperation;
     private String mNameOfOperation;
     private int mMedicalCost; // стоимость лечения
+    private Doctor mHealingDoctor;
+
+    public Doctor getHealingDoctor() {
+        return mHealingDoctor;
+    }
+
+    public void setHealingDoctor(Doctor healingDoctor) {
+        mHealingDoctor = healingDoctor;
+    }
+
+    public Patient(Doctor healingDoctor) {
+        mHealingDoctor = healingDoctor;
+    }
+
+
     void printHumanInfo() {
         System.out.println("Ф.И.О.="+getFIO()+
                 "Insurances Policy=" +mInsurancesPolicy +
@@ -17,6 +32,9 @@ public class Patient extends Human implements ICanTakeHeal,ICanFirstAid{
                 ", Date Of Operation='" + mDateOfOperation + '\'' +
                 ", Name Of Operation='" + mNameOfOperation + '\'' +
                 ", Medical Cost=" + mMedicalCost);
+    }
+
+    public Patient() {
     }
 
     @Override

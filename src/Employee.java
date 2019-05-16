@@ -4,7 +4,7 @@ public class Employee extends Human implements ICanFirstAid {
 
     @Override
     void printHumanInfo() {
-        System.out.println("FIO="+getFIO()+
+        System.out.println("Фамилия Имя Отчество="+getFIO()+
                 "mPost='" + mPost + '\'' +
                 ", mWorkExperience=" + mWorkExperience);
     }
