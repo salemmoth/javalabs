@@ -1,16 +1,11 @@
-import jdk.swing.interop.SwingInterOpUtils;
 
-import javax.print.Doc;
-import java.awt.*;
-import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.io.*;
 import java.util.*;
-import java.text.ParseException;
-import java.util.List;
-import java.util.function.Consumer;
 
-public class Main {
+import java.util.List;
+
+
+public class Main implements Serializable {
     final static String[] NAMES = {"Албегонов Игорь", "Алборов Мухсен", "Зурыков Георгий", "Беззубов Баракуда"};
     final static String[] POSTS = {"Преподаватель", "Ученый", "Профессор", "Доцент"};
     final static String[] CITIES = {"Владикавказ", "Москва", "Санкт-Петербург", "Новокузнецк", "Липецк"};
@@ -24,46 +19,27 @@ public class Main {
     static List<Doctor> doctors;
     static Scanner scanner;
 
-    static class Diagnose {
-        private int mCount;
-        private int mCost;
 
-        public Diagnose(int count, int cost) {
-            mCount = count;
-            mCost = cost;
-        }
-
-        public int getCount() {
-            return mCount;
-        }
-
-        public void setCount(int count) {
-            mCount = count;
-        }
-
-        public int getCost() {
-            return mCost;
-        }
-
-        public void setCost(int cost) {
-            mCost = cost;
-        }
-    }
-
-
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, FileNotFoundException {
         scanner = new Scanner(System.in);
         fillData();
-        System.out.println("1) Дорогостоящие операции");
-        System.out.println("2) Диагнозы стоимость и количество");
+        System.out.println("1) Сортировка по стоимости лечения");
+        System.out.println("2) Список наиболее дорогостоящих операций");
         System.out.println("3) По каждому врачу получить список пациентов");
+        System.out.println("4) Cохранение объектов из коллекции в текстовый файл");
+        System.out.println("5) Загрузка объектов из текстового файла в коллекцию");
+        Hospital hospital=new Hospital();
         int choose = scanner.nextInt();
-        if (choose == 1) {
+
+        switch(choose){
+        case 1:
+            //сортировка по стоимости лечения
             patients.sort(Comparator.comparingInt(Patient::getMedicalCost).reversed());
             System.out.println("Самые дорогостоящие операции");
             patients.forEach(System.out::println);
-        } else if (choose == 2) {
-            HashMap<String, Diagnose> hash = new HashMap<>();
+          case 2:
+        //список наиболее дорогостоящих операций
+        { HashMap<String, Diagnose> hash = new HashMap<>();
 
 
             patients.forEach(patient -> {
@@ -82,8 +58,9 @@ public class Main {
                 System.out.println("Диагноз: " + key);
                 System.out.println("Цена: " + diagnose.getCost());
                 System.out.println("Кол-во пациентов: " + diagnose.getCount());
-            });
-        } else if (choose == 3) {
+            });}
+            //список пациентов
+            case 3:
             doctors.forEach(doctor -> {
                 List<Patient> founded = new ArrayList<>();
                 patients.forEach(patient -> {
@@ -93,9 +70,21 @@ public class Main {
                 });
                 System.out.println("Доктор " + doctor.getFIO() + ", кол-во пациентов: " + founded.size());
             });
-        }
+                //задание лабораторной работы 4
+            case 4:FileOutputStream fos=new FileOutputStream("saved.out");
+                ObjectOutputStream oos=new ObjectOutputStream(fos);
 
+
+                oos.writeObject(hospital);
+                oos.flush();
+                oos.close();
+            case 5: FileInputStream fis=new FileInputStream("saved.out");
+                    ObjectInputStream ois=new ObjectInputStream(fis);
+                    ois.read();
+                    ois.close();
+        }
     }
+
 
     static void fillData() {
         patients = new ArrayList<>();
