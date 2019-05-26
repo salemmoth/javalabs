@@ -1,7 +1,8 @@
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 
-public class Hospital implements Comparable<Hospital> {
+public class Hospital implements Comparable<Hospital>, Serializable {
     private String mNameOfHospital;
     private String mFIOofDirector;// ФИО заведующего
     private String mCity;

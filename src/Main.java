@@ -19,9 +19,10 @@ public class Main implements Serializable {
     static List<Doctor> doctors;
     static Scanner scanner;
 
+    public static void main(String[] args) throws IOException, FileNotFoundException, ClassNotFoundException {
 
-    public static void main(String[] args) throws IOException, FileNotFoundException {
         scanner = new Scanner(System.in);
+
         fillData();
         System.out.println("1) Сортировка по стоимости лечения");
         System.out.println("2) Список наиболее дорогостоящих операций");
@@ -38,50 +39,52 @@ public class Main implements Serializable {
             System.out.println("Самые дорогостоящие операции");
             patients.forEach(System.out::println);
           case 2:
-        //список наиболее дорогостоящих операций
-        { HashMap<String, Diagnose> hash = new HashMap<>();
+            //список наиболее дорогостоящих операций
+            { HashMap<String, Diagnose> hash = new HashMap<>();
 
 
-            patients.forEach(patient -> {
-                if (hash.containsKey(patient.getDiagnosis())) {
-                    Diagnose diagnose = hash.get(patient.getDiagnosis());
-                    diagnose.setCost(diagnose.getCost() + patient.getMedicalCost());
-                    diagnose.setCount(diagnose.getCount() + 1);
-                    hash.put(patient.getDiagnosis(), diagnose);
-
-                } else {
-                    hash.put(patient.getDiagnosis(), new Diagnose(1, patient.getMedicalCost()));
-                }
-            });
-            hash.keySet().forEach(key -> {
-                Diagnose diagnose = hash.get(key);
-                System.out.println("Диагноз: " + key);
-                System.out.println("Цена: " + diagnose.getCost());
-                System.out.println("Кол-во пациентов: " + diagnose.getCount());
-            });}
-            //список пациентов
-            case 3:
-            doctors.forEach(doctor -> {
-                List<Patient> founded = new ArrayList<>();
                 patients.forEach(patient -> {
-                    Doctor healDoctor = patient.getHealingDoctor();
-                    if (healDoctor.equals(doctor))
-                        founded.add(patient);
+                    if (hash.containsKey(patient.getDiagnosis())) {
+                        Diagnose diagnose = hash.get(patient.getDiagnosis());
+                        diagnose.setCost(diagnose.getCost() + patient.getMedicalCost());
+                        diagnose.setCount(diagnose.getCount() + 1);
+                        hash.put(patient.getDiagnosis(), diagnose);
+
+                    } else {
+                        hash.put(patient.getDiagnosis(), new Diagnose(1, patient.getMedicalCost()));
+                    }
                 });
-                System.out.println("Доктор " + doctor.getFIO() + ", кол-во пациентов: " + founded.size());
-            });
+                hash.keySet().forEach(key -> {
+                    Diagnose diagnose = hash.get(key);
+                    System.out.println("Диагноз: " + key);
+                    System.out.println("Цена: " + diagnose.getCost());
+                    System.out.println("Кол-во пациентов: " + diagnose.getCount());
+                });}
+                //список пациентов
+           case 3:
+                doctors.forEach(doctor -> {
+                    List<Patient> founded = new ArrayList<>();
+                    patients.forEach(patient -> {
+                        Doctor healDoctor = patient.getHealingDoctor();
+                        if (healDoctor.equals(doctor))
+                            founded.add(patient);
+                    });
+                    System.out.println("Доктор " + doctor.getFIO() + ", кол-во пациентов: " + founded.size());
+                });
                 //задание лабораторной работы 4
-            case 4:FileOutputStream fos=new FileOutputStream("saved.out");
+            case 4:FileOutputStream fos=new FileOutputStream("saved.out");//сча ты же не доделал 3 задание какое
                 ObjectOutputStream oos=new ObjectOutputStream(fos);
-
-
                 oos.writeObject(hospital);
                 oos.flush();
                 oos.close();
+
+
             case 5: FileInputStream fis=new FileInputStream("saved.out");
                     ObjectInputStream ois=new ObjectInputStream(fis);
+                    hospital = (Hospital) ois.readObject();
                     ois.read();
                     ois.close();
+
         }
     }
 
