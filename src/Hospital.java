@@ -1,5 +1,7 @@
+import javax.print.Doc;
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 
 public class Hospital implements Comparable<Hospital>, Serializable {
@@ -7,6 +9,41 @@ public class Hospital implements Comparable<Hospital>, Serializable {
     private String mFIOofDirector;// ФИО заведующего
     private String mCity;
     private String mAddress;
+    private List<Patient> mPatients;
+    private List<Doctor> mDoctors;
+    private List<Department> mDepartments;
+
+    public List<Department> getDepartments() {
+        return mDepartments;
+    }
+
+    public void setDepartments(List<Department> departments) {
+        mDepartments = departments;
+    }
+
+    public String getAddress() {
+        return mAddress;
+    }
+
+    public void setAddress(String address) {
+        mAddress = address;
+    }
+
+    public List<Patient> getPatients() {
+        return mPatients;
+    }
+
+    public void setPatients(List<Patient> patients) {
+        mPatients = patients;
+    }
+
+    public List<Doctor> getDoctors() {
+        return mDoctors;
+    }
+
+    public void setDoctors(List<Doctor> doctors) {
+        mDoctors = doctors;
+    }
 
     public Hospital(String nameOfHospital, String fioOfDirector, String city, String address) {
         mNameOfHospital = nameOfHospital;

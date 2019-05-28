@@ -1,4 +1,6 @@
 
+import org.w3c.dom.traversal.DocumentTraversal;
+
 import java.io.*;
 import java.util.*;
 
@@ -13,7 +15,7 @@ public class Main implements Serializable {
     final static String[] DIAGNOSIS = {"Простуда", "Депрессия", "Грип", "Диссециативное расстройство личности", "Биполярное расстройство", "Отравление", "Перелом", "Расстяжение"};
 
 
-    static List<Hospital> hospitals;
+    static Hospital hospital;
     static List<Department> departments;
     static List<Patient> patients;
     static List<Doctor> doctors;
@@ -29,18 +31,18 @@ public class Main implements Serializable {
         System.out.println("3) По каждому врачу получить список пациентов");
         System.out.println("4) Cохранение объектов из коллекции в текстовый файл");
         System.out.println("5) Загрузка объектов из текстового файла в коллекцию");
-        Hospital hospital=new Hospital();
         int choose = scanner.nextInt();
 
-        switch(choose){
-        case 1:
-            //сортировка по стоимости лечения
-            patients.sort(Comparator.comparingInt(Patient::getMedicalCost).reversed());
-            System.out.println("Самые дорогостоящие операции");
-            patients.forEach(System.out::println);
-          case 2:
-            //список наиболее дорогостоящих операций
-            { HashMap<String, Diagnose> hash = new HashMap<>();
+        switch (choose) {
+            case 1:
+                //сортировка по стоимости лечения
+                patients.sort(Comparator.comparingInt(Patient::getMedicalCost).reversed());
+                System.out.println("Самые дорогостоящие операции");
+                patients.forEach(System.out::println);
+            case 2:
+                //список наиболее дорогостоящих операций
+            {
+                HashMap<String, Diagnose> hash = new HashMap<>();
 
 
                 patients.forEach(patient -> {
@@ -59,9 +61,10 @@ public class Main implements Serializable {
                     System.out.println("Диагноз: " + key);
                     System.out.println("Цена: " + diagnose.getCost());
                     System.out.println("Кол-во пациентов: " + diagnose.getCount());
-                });}
-                //список пациентов
-           case 3:
+                });
+            }
+            //список пациентов
+            case 3:
                 doctors.forEach(doctor -> {
                     List<Patient> founded = new ArrayList<>();
                     patients.forEach(patient -> {
@@ -72,31 +75,61 @@ public class Main implements Serializable {
                     System.out.println("Доктор " + doctor.getFIO() + ", кол-во пациентов: " + founded.size());
                 });
                 //задание лабораторной работы 4
-            case 4:FileOutputStream fos=new FileOutputStream("saved.out");//сча ты же не доделал 3 задание какое
-                ObjectOutputStream oos=new ObjectOutputStream(fos);
+            case 4:
+                FileOutputStream fos = new FileOutputStream("saved.out");
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+
                 oos.writeObject(hospital);
+
                 oos.flush();
                 oos.close();
+                break;
 
+            case 5:
+                FileInputStream fis = new FileInputStream("saved.out");
+                ObjectInputStream ois = new ObjectInputStream(fis);
 
-            case 5: FileInputStream fis=new FileInputStream("saved.out");
-                    ObjectInputStream ois=new ObjectInputStream(fis);
-                    hospital = (Hospital) ois.readObject();
-                    ois.read();
-                    ois.close();
+                hospital = (Hospital) ois.readObject();
+
+                System.out.println(hospital);
+                System.out.println("Кол-во " + hospital.getDepartments().size() + " отделений");
+                System.out.println("Кол-во " + hospital.getDoctors().size() + " докторов");
+                System.out.println("Кол-во " + hospital.getPatients().size() + " пациентов");// Фасиш)вот видииииишшьььььь
+
+                ois.read();
+                ois.close();
+                break;
 
         }
     }
 
-
-    static void fillData() {
+      static void fillData() {
+        hospital = new Hospital("ФГБОУ Клиническая больница №15 rus", NAMES[0], CITIES[0], "ул.Николаева 12");
         patients = new ArrayList<>();
         doctors = new ArrayList<>();
+        departments = new ArrayList<>();
         Random random = new Random();
+
+        System.out.print("Кол-во департаментов: ");
+        int depCount = scanner.nextInt();
         System.out.print("Кол-во докторов: ");
         int doctorsCount = scanner.nextInt();
         System.out.print("Кол-во пациентов: ");
         int patientsCount = scanner.nextInt();
+        // ПОПА ДОЛЖЕН НАПИСАТЬ ТУТ
+
+
+        for (int i = 0; i < depCount; i++) {
+            Department department = new Department();
+            department.setCity(CITIES[random.nextInt(CITIES.length)]);
+            department.setFIOofDirector(NAMES[random.nextInt(NAMES.length)]);
+            department.setCorpus(random.nextInt(10) + 1);
+            department.setFloor(random.nextInt(5) + 1);
+            department.setNameOfHospital("ФГБОУ Клиническая больница №" + random.nextInt());
+            department.setaddress("Неизвестен");
+            department.setNameOfDepartment(DEPARTMENTS[random.nextInt(DEPARTMENTS.length)]);
+            departments.add(department);
+        }
 
         for (int i = 0; i < doctorsCount; i++) {
             Doctor doctor = new Doctor();
@@ -128,6 +161,10 @@ public class Main implements Serializable {
             patient.setMedicalCost(random.nextInt(1000) + 100);
             patients.add(patient);
         }
+
+        hospital.setPatients(patients);
+        hospital.setDepartments(departments);
+        hospital.setDoctors(doctors);
 
         doctors.forEach(System.out::println);
         patients.forEach(System.out::println);
