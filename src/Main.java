@@ -94,8 +94,7 @@ public class Main implements Serializable {
                 System.out.println(hospital);
                 System.out.println("Кол-во " + hospital.getDepartments().size() + " отделений");
                 System.out.println("Кол-во " + hospital.getDoctors().size() + " докторов");
-                System.out.println("Кол-во " + hospital.getPatients().size() + " пациентов");// Фасиш)вот видииииишшьььььь
-
+                System.out.println("Кол-во " + hospital.getPatients().size() + " пациентов");
                 ois.read();
                 ois.close();
                 break;
@@ -116,7 +115,6 @@ public class Main implements Serializable {
         int doctorsCount = scanner.nextInt();
         System.out.print("Кол-во пациентов: ");
         int patientsCount = scanner.nextInt();
-        // ПОПА ДОЛЖЕН НАПИСАТЬ ТУТ
 
 
         for (int i = 0; i < depCount; i++) {
