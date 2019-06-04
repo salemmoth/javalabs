@@ -57,10 +57,7 @@ public class Hospital implements Comparable<Hospital>, Serializable {
 
     @Override
     public String toString() {
-        return "Название больницы: " + mNameOfHospital + "; \n" +
-                "Ф.И.О заведующего : " + mFIOofDirector +
-                "Город: " + mCity + "; \n" +
-                "Адресс:" + mAddress + "; \n";
+        return String.format("Больница\n\tНазвание:%s,ФИО директора:%s,Город:%s,",getNameOfHospital(),getFIOofDirector(),getCity());
     }
 
     public String getNameOfHospital() {

@@ -10,6 +10,11 @@ public class Doctor extends Employee implements ICanTakeHeal {
     }
 
     @Override
+    public String toString() {
+        return String.format("Доктор\n\tФио:%s,Научная степень:%s,Оказание первой помощи:%b",getFIO(),mSciencePost,canHeal());
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -32,6 +37,6 @@ public class Doctor extends Employee implements ICanTakeHeal {
 
     @Override
     public boolean canHeal() {
-        return false;
+        return getWorkExperience()>1;
     }
 }

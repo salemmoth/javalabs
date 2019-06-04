@@ -91,6 +91,12 @@ public class Main implements Serializable {
 
                 hospital = (Hospital) ois.readObject();
 
+
+
+                hospital.getDepartments().forEach(System.out::println);
+                hospital.getDoctors().forEach(System.out::println);
+                hospital.getPatients().forEach(System.out::println);
+
                 System.out.println(hospital);
                 System.out.println("Кол-во " + hospital.getDepartments().size() + " отделений");
                 System.out.println("Кол-во " + hospital.getDoctors().size() + " докторов");
@@ -123,7 +129,7 @@ public class Main implements Serializable {
             department.setFIOofDirector(NAMES[random.nextInt(NAMES.length)]);
             department.setCorpus(random.nextInt(10) + 1);
             department.setFloor(random.nextInt(5) + 1);
-            department.setNameOfHospital("ФГБОУ Клиническая больница №" + random.nextInt());
+            department.setNameOfHospital("ФГБОУ Клиническая больница №" + random.nextInt(100));
             department.setaddress("Неизвестен");
             department.setNameOfDepartment(DEPARTMENTS[random.nextInt(DEPARTMENTS.length)]);
             departments.add(department);
@@ -146,6 +152,7 @@ public class Main implements Serializable {
         for (int i = 0; i < patientsCount; i++) {
             Patient patient = new Patient();
             patient.setFIO(NAMES[random.nextInt(NAMES.length)]);
+            patient.setInsurancesPolicy(random.nextLong());
             patient.setCity(CITIES[random.nextInt(CITIES.length)]);
             patient.setFIOofDirector(NAMES[random.nextInt(NAMES.length)]);
             patient.setCorpus(random.nextInt(10) + 1);
@@ -164,6 +171,7 @@ public class Main implements Serializable {
         hospital.setDepartments(departments);
         hospital.setDoctors(doctors);
 
+        departments.forEach(System.out::println);
         doctors.forEach(System.out::println);
         patients.forEach(System.out::println);
     }

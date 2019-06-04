@@ -39,15 +39,8 @@ public class Patient extends Human implements ICanTakeHeal,ICanFirstAid{
 
     @Override
     public String toString() {
-        return "Patient{" +
-                "Insurances Policy=" + mInsurancesPolicy +
-                ", Arrival Date='" + mArrivalDate + '\'' +
-                ", Statement Date='" + mStatementDate + '\'' +
-                ", Diagnosis='" + mDiagnosis + '\'' +
-                ", Date Of Operation='" + mDateOfOperation + '\'' +
-                ", Name Of Operation='" + mNameOfOperation + '\'' +
-                ", Medical Cost=" + mMedicalCost +
-                '}';
+        return String.format("Пациент\n\tФИО:%s,Полис:%d,Диагноз:%s,Название операции:%s,Цена лечения:%d",
+                getFIO(),getInsurancesPolicy(),getDiagnosis(),getNameOfOperation(),getMedicalCost());
     }
 
     public long getInsurancesPolicy() {
